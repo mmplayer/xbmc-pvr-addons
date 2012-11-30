@@ -1,36 +1,23 @@
 # XBMC Media Center language file
-# Addon Name: NextPVR PVR addon
+# Addon Name: NextPVR PVR Client
 # Addon id: pvr.nextpvr
-# Addon version: 1.2.3.114
+# Addon version: 1.6.2
 # Addon Provider: Graeme Blackley
 msgid ""
 msgstr ""
-"Project-Id-Version: pvr.nextpvr-Frodo\n"
-"Report-Msgid-Bugs-To: nowhere@nowhere.com\n"
-"POT-Creation-Date: 2012-06-03 16:35+0000\n"
+"Project-Id-Version: XBMC Main Translation Project (Frodo)\n"
+"Report-Msgid-Bugs-To: http://trac.xbmc.org/\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE\n"
+"Last-Translator: XBMC Translation Team\n"
+"Language-Team: English (http://www.transifex.com/projects/p/XBMC-Main-Frodo/language/en/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: en\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "Addon Summary"
-msgid "XBMC frontend for the NextPVR"
-msgstr ""
-
-msgctxt "Addon Description"
-msgid "NextPVR frontend. Supports streaming of Live TV &amp; Recordings, listening to Radio channels and EPG. "
-msgstr ""
-
-msgctxt "Addon Disclaimer"
-msgid "This is unstable software! The authors are in no way responsible for failed recordings, incorrect timers, wasted hours, or any other undesirable effects."
-msgstr ""
-
-# Settings labels
-###########################
+#Settings labels
 
 msgctxt "#30000"
 msgid "NextPVR Hostname"
@@ -44,22 +31,36 @@ msgctxt "#30002"
 msgid "NextPVR PinCode"
 msgstr ""
 
-# Category labels
-###########################
+msgctxt "#30003"
+msgid "Enable TimeShift with Live TV"
+msgstr ""
+
+#empty strings from id 30004 to 30039
+#Category labels
+
 msgctxt "#30040"
 msgid "Connection"
 msgstr ""
 
-# on-screen error messages
-###########################
+msgctxt "#30041"
+msgid "Advanced"
+msgstr ""
+
+#empty strings from id 30042 to 30049
+#On-screen error messages
+
 msgctxt "#30050"
 msgid "NextPVR server is too old."
 msgstr ""
 
 msgctxt "#30051"
-msgid "Upgrade to '2.5.8' or higher!"
+msgid "Upgrade to '%s' or higher!"
 msgstr ""
 
 msgctxt "#30052"
 msgid "Connection failed. Incorrect PIN?"
+msgstr ""
+
+msgctxt "#30053"
+msgid "Tuner no longer available"
 msgstr ""

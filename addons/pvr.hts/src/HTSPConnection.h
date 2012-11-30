@@ -22,7 +22,7 @@
  */
 
 #include "HTSPTypes.h"
-#include "platform/threads/mutex.h"
+#include "platform/threads/threads.h"
 
 extern "C" {
 #include "libhts/net.h"
@@ -34,15 +34,26 @@ namespace PLATFORM
   class CTcpConnection;
 }
 
-class CHTSPConnection
+class CHTSPConnectionCallback
 {
 public:
-  CHTSPConnection();
+  CHTSPConnectionCallback(void) {}
+  virtual ~CHTSPConnectionCallback(void) {}
+
+  virtual void OnConnectionDropped(void) {}
+  virtual void OnConnectionRestored(void) {}
+};
+
+class CHTSPConnection : private PLATFORM::CThread
+{
+public:
+  CHTSPConnection(CHTSPConnectionCallback* callback);
   ~CHTSPConnection();
 
   bool        Connect(void);
   void        Close();
   bool        IsConnected(void);
+  bool        CheckConnection(uint32_t iTimeout);
   int         GetProtocol() const { return m_iProtocol; }
   const char *GetServerName() const { return m_strServerName.c_str(); }
   const char *GetVersion() const { return m_strVersion.c_str(); }
@@ -53,8 +64,11 @@ public:
   bool        ReadSuccess(htsmsg_t* m, bool sequence = true, std::string action = "");
 
   bool        CanTimeshift(void);
+  bool        CanSeekLiveStream(void);
 
 private:
+  bool OpenSocket(void);
+  void* Process(void);
   bool SendGreeting(void);
   bool Auth(void);
 
@@ -72,7 +86,10 @@ private:
   std::string               m_strHostname;
   bool                      m_bIsConnected;
   bool                      m_bTimeshiftSupport;
+  bool                      m_bTimeshiftSeekSupport;
 
   std::deque<htsmsg_t*>     m_queue;
   const unsigned int        m_iQueueSize;
+  CHTSPConnectionCallback*  m_callback;
+  PLATFORM::CCondition<bool> m_connectEvent;
 };

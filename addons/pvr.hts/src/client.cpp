@@ -152,12 +152,9 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
   HTSPData = new CHTSPData;
   if (!HTSPData->Open())
   {
-    delete HTSPData;
-    delete PVR;
-    delete XBMC;
-    HTSPData = NULL;
-    PVR = NULL;
-    XBMC = NULL;
+    SAFE_DELETE(HTSPData);
+    SAFE_DELETE(PVR);
+    SAFE_DELETE(XBMC);
     m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
     return m_CurStatus;
   }
@@ -178,27 +175,10 @@ ADDON_STATUS ADDON_GetStatus()
 
 void ADDON_Destroy()
 {
-  if (m_bCreated)
-  {
-    if (HTSPData)
-    {
-      delete HTSPData;
-      HTSPData = NULL;
-    }
-    m_bCreated = false;
-  }
-
-  if (PVR)
-  {
-    delete PVR;
-    PVR = NULL;
-  }
-
-  if (XBMC)
-  {
-    delete XBMC;
-    XBMC = NULL;
-  }
+  m_bCreated = false;
+  SAFE_DELETE(HTSPData);
+  SAFE_DELETE(PVR);
+  SAFE_DELETE(XBMC);
 
   m_CurStatus = ADDON_STATUS_UNKNOWN;
 }
@@ -312,15 +292,15 @@ const char* GetMininumPVRAPIVersion(void)
 
 PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
 {
-  pCapabilities->bSupportsEPG             = true;
-  pCapabilities->bSupportsTV              = true;
-  pCapabilities->bSupportsRadio           = true;
-  pCapabilities->bSupportsRecordings      = true;
-  pCapabilities->bSupportsTimers          = true;
-  pCapabilities->bSupportsChannelGroups   = true;
-  pCapabilities->bHandlesInputStream      = true;
-  pCapabilities->bHandlesDemuxing         = true;
-
+  pCapabilities->bSupportsEPG              = true;
+  pCapabilities->bSupportsTV               = true;
+  pCapabilities->bSupportsRadio            = true;
+  pCapabilities->bSupportsRecordings       = true;
+  pCapabilities->bSupportsTimers           = true;
+  pCapabilities->bSupportsChannelGroups    = true;
+  pCapabilities->bHandlesInputStream       = true;
+  pCapabilities->bHandlesDemuxing          = true;
+  pCapabilities->bSupportsRecordingFolders = true;
   return PVR_ERROR_NO_ERROR;
 }
 
@@ -470,12 +450,7 @@ bool OpenLiveStream(const PVR_CHANNEL &channel)
 
 void CloseLiveStream(void)
 {
-  if (HTSPDemuxer)
-  {
-    HTSPDemuxer->Close();
-    delete HTSPDemuxer;
-    HTSPDemuxer = NULL;
-  }
+  SAFE_DELETE(HTSPDemuxer);
 }
 
 int GetCurrentClientChannel(void)
@@ -556,6 +531,75 @@ PVR_ERROR GetChannelGroupMembers(ADDON_HANDLE handle, const PVR_CHANNEL_GROUP &g
   return HTSPData->GetChannelGroupMembers(handle, group);
 }
 
+bool OpenRecordedStream(const PVR_RECORDING &recording)
+{
+  if (!HTSPData || !HTSPData->IsConnected())
+    return false;
+  return HTSPData->OpenRecordedStream(recording);
+}
+
+void CloseRecordedStream(void)
+{
+  if (!HTSPData || !HTSPData->IsConnected())
+    return;
+  HTSPData->CloseRecordedStream();
+}
+
+int ReadRecordedStream(unsigned char *pBuffer, unsigned int iBufferSize)
+{
+  if (!HTSPData || !HTSPData->IsConnected())
+    return -1;
+  return HTSPData->ReadRecordedStream(pBuffer, iBufferSize);
+}
+
+long long SeekRecordedStream(long long iPosition, int iWhence /* = SEEK_SET */)
+{
+  if (!HTSPData || !HTSPData->IsConnected())
+    return -1;
+  return HTSPData->SeekRecordedStream(iPosition, iWhence);
+}
+
+long long PositionRecordedStream(void)
+{
+  if (!HTSPData || !HTSPData->IsConnected())
+    return -1;
+  return HTSPData->PositionRecordedStream();
+}
+
+long long LengthRecordedStream(void)
+{
+  if (!HTSPData || !HTSPData->IsConnected())
+    return -1;
+  return HTSPData->LengthRecordedStream();
+}
+
+bool CanPauseStream(void)
+{
+  if (HTSPData)
+    return HTSPData->CanTimeshift();
+  return false;
+}
+
+bool CanSeekStream(void)
+{
+  if (HTSPData)
+    return HTSPData->CanSeekLiveStream();
+  return false;
+}
+
+bool SeekTime(int time,bool backward,double *startpts)
+{
+  if (HTSPDemuxer && HTSPData && HTSPData->CanSeekLiveStream())
+    HTSPDemuxer->SeekTime(time, backward, startpts);
+  return false;
+}
+
+void SetSpeed(int speed)
+{
+  if(HTSPDemuxer && HTSPData && HTSPData->CanTimeshift())
+    HTSPDemuxer->SetSpeed(speed);
+}
+
 /** UNUSED API FUNCTIONS */
 PVR_ERROR DialogChannelScan(void) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR CallMenuHook(const PVR_MENUHOOK &menuhook) { return PVR_ERROR_NOT_IMPLEMENTED; }
@@ -564,12 +608,6 @@ PVR_ERROR RenameChannel(const PVR_CHANNEL &channel) { return PVR_ERROR_NOT_IMPLE
 PVR_ERROR MoveChannel(const PVR_CHANNEL &channel) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR DialogChannelSettings(const PVR_CHANNEL &channel) { return PVR_ERROR_NOT_IMPLEMENTED; }
 PVR_ERROR DialogAddChannel(const PVR_CHANNEL &channel) { return PVR_ERROR_NOT_IMPLEMENTED; }
-bool OpenRecordedStream(const PVR_RECORDING &recording) { return false; }
-void CloseRecordedStream(void) {}
-int ReadRecordedStream(unsigned char *pBuffer, unsigned int iBufferSize) { return 0; }
-long long SeekRecordedStream(long long iPosition, int iWhence /* = SEEK_SET */) { return 0; }
-long long PositionRecordedStream(void) { return -1; }
-long long LengthRecordedStream(void) { return 0; }
 void DemuxReset(void) {}
 void DemuxFlush(void) {}
 int ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize) { return 0; }
@@ -582,22 +620,5 @@ PVR_ERROR SetRecordingLastPlayedPosition(const PVR_RECORDING &recording, int las
 int GetRecordingLastPlayedPosition(const PVR_RECORDING &recording) { return -1; }
 unsigned int GetChannelSwitchDelay(void) { return 0; }
 void PauseStream(bool bPaused) {}
-bool CanPauseStream(void)
-{
-  if (HTSPData)
-    return HTSPData->CanTimeshift();
-  return false;
-}
-bool CanSeekStream(void)
-{
-  if (HTSPData)
-    return HTSPData->CanTimeshift();
-  return false;
-}
-bool SeekTime(int time,bool backward,double *startpts) { return false; }
-void SetSpeed(int speed)
-{
-  if(HTSPDemuxer)
-    HTSPDemuxer->SetSpeed(speed);
-}
+
 }

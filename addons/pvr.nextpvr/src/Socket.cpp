@@ -249,12 +249,6 @@ int Socket::send ( const char* data, const unsigned int len )
     _sd = INVALID_SOCKET;
     return 0;
   }
-  if (FD_ISSET(_sd, &set_w))
-  {
-    XBMC->Log(LOG_ERROR, "Socket::send  - failed to send data");
-    _sd = INVALID_SOCKET;
-    return 0;
-  }
 
   int status = ::send(_sd, data, len, 0 );
 
@@ -752,9 +746,6 @@ void Socket::errormessage( int errnum, const char* functionname) const
     case ENOTCONN:
       errmsg = "ENOTCONN: The socket is associated with a connection-oriented protocol and has not been connected";
       break;
-    //case E:
-    //	errmsg = "";
-    //	break;
     default:
       break;
   }
@@ -778,4 +769,4 @@ void Socket::osCleanup()
 }
 #endif //TARGET_WINDOWS || TARGET_LINUX || TARGET_DARWIN
 
-} //namespace MPTV
+} //namespace NextPVR

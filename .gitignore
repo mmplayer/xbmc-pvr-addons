@@ -3,6 +3,7 @@
 .deps
 .libs
 .project
+.dependencies
 
 .dummy
 .dummy.in
@@ -32,6 +33,7 @@ missing
 *.la
 *.pvr
 *.zip
+*.so
 
 # Windows specific generated files
 *.exp

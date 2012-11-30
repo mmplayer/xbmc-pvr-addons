@@ -25,7 +25,7 @@ LIBDIR = $(VDRDIR)/PLUGINS/lib
 TMPDIR = /tmp
 
 ### Make sure that necessary options are included:
-
+-include ../../../tools/a10/depends/depends.mk
 -include $(VDRDIR)/Make.global
 
 ### Allow user defined options to overwrite defaults:

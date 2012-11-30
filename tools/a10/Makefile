@@ -7,7 +7,7 @@ CONFIGURE=./configure --prefix=$(PREFIX) --build=$(BUILD) --host=$(HOST)
 all: configure
 	cd $(SOURCE); make -j $(JOBS)
 	cd $(SOURCE); make install
-	cd $(SOURCE); make zip
+#	cd $(SOURCE); make zip
 
 clean:
 distclean:

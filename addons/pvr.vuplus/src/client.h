@@ -22,6 +22,7 @@
 
 #include "libXBMC_addon.h"
 #include "libXBMC_pvr.h"
+#include "libXBMC_gui.h"
 
 #define DEFAULT_HOST             "127.0.0.1"
 #define DEFAULT_CONNECT_TIMEOUT  30
@@ -48,6 +49,7 @@ extern bool                      g_bCheckForChannelUpdates;
 extern bool                      g_bOnlyCurrentLocation;
 extern bool			 g_bSetPowerstate;
 extern bool			 g_bOnlyOneGroup;
+extern bool                      g_bOnlinePicons;
 extern std::string               g_strOneGroup;
 extern std::string               g_szUserPath;
 extern std::string               g_szClientPath;

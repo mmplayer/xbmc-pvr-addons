@@ -116,9 +116,9 @@ bool cPVRClientArgusTV::Connect()
       default:
          XBMC->Log(LOG_ERROR, "Ping failed... No connection to Argus TV.\n");
          usleep(1000000);
-         if (attemps > 30)
+         if (attemps > 3)
          {
-           XBMC->QueueNotification(QUEUE_ERROR, "No connection to Argus TV");
+           XBMC->QueueNotification(QUEUE_ERROR, "No connection to Argus TV server");
            return false;
          }
     }
@@ -380,9 +380,9 @@ PVR_ERROR cPVRClientArgusTV::GetEpg(ADDON_HANDLE handle, const PVR_CHANNEL &chan
             broadcast.strPlotOutline      = epg.Subtitle();
             broadcast.strPlot             = epg.Description();
             broadcast.strIconPath         = "";
-            broadcast.iGenreType          = 0;
+            broadcast.iGenreType          = EPG_GENRE_USE_STRING;
             broadcast.iGenreSubType       = 0;
-            broadcast.strGenreDescription = "";
+            broadcast.strGenreDescription = epg.Genre();
             broadcast.firstAired          = 0;
             broadcast.iParentalRating     = 0;
             broadcast.iStarRating         = 0;

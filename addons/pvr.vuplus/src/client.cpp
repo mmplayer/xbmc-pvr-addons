@@ -53,6 +53,7 @@ bool        g_bCheckForChannelUpdates = true;
 bool        g_bOnlyCurrentLocation    = false;
 bool        g_bSetPowerstate          = false;
 bool        g_bOnlyOneGroup           = false;
+bool        g_bOnlinePicons           = true;
 std::string g_strOneGroup             = "";
 std::string g_szClientPath            = "";
 std::string g_strChannelDataPath      = "/tmp/";
@@ -103,6 +104,10 @@ void ADDON_ReadSettings(void)
   /* read setting "webport" from settings.xml */
   if (!XBMC->GetSetting("webport", &g_iPortWeb))
     g_iPortWeb = DEFAULT_WEB_PORT;
+  
+  /* read setting "onlinepicons" from settings.xml */
+  if (!XBMC->GetSetting("onlinepicons", &g_bOnlinePicons))
+    g_bOnlinePicons = true;
   
   /* read setting "onlycurrent" from settings.xml */
   if (!XBMC->GetSetting("onlycurrent", &g_bOnlyCurrentLocation))
@@ -322,6 +327,10 @@ void ADDON_FreeSettings()
 {
 }
 
+void ADDON_Announce(const char *flag, const char *sender, const char *message, const void *data)
+{
+}
+
 /***********************************************************
  * PVR Client AddOn specific public library functions
  ***********************************************************/
@@ -338,19 +347,30 @@ const char* GetMininumPVRAPIVersion(void)
   return strMinApiVersion;
 }
 
+const char* GetGUIAPIVersion(void)
+{
+  static const char *strGuiApiVersion = XBMC_GUI_API_VERSION;
+  return strGuiApiVersion;
+}
+
+const char* GetMininumGUIAPIVersion(void)
+{
+  static const char *strMinGuiApiVersion = XBMC_GUI_MIN_API_VERSION;
+  return strMinGuiApiVersion;
+}
+
 PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES* pCapabilities)
 {
-  //pCapabilities->bSupportsChannelSettings = false;
-  //pCapabilities->bSupportsTimeshift       = false;
-  pCapabilities->bSupportsEPG             = true;
-  pCapabilities->bSupportsTV              = true;
-  pCapabilities->bSupportsRadio           = true;
-  pCapabilities->bSupportsRecordings      = true;
-  pCapabilities->bSupportsTimers          = true;
-  pCapabilities->bSupportsChannelGroups   = true;
-  pCapabilities->bSupportsChannelScan     = false;
-  pCapabilities->bHandlesInputStream      = true;
-  pCapabilities->bHandlesDemuxing         = false;
+  pCapabilities->bSupportsEPG                = true;
+  pCapabilities->bSupportsTV                 = true;
+  pCapabilities->bSupportsRadio              = true;
+  pCapabilities->bSupportsRecordings         = true;
+  pCapabilities->bSupportsRecordingFolders   = true;
+  pCapabilities->bSupportsTimers             = true;
+  pCapabilities->bSupportsChannelGroups      = true;
+  pCapabilities->bSupportsChannelScan        = false;
+  pCapabilities->bHandlesInputStream         = true;
+  pCapabilities->bHandlesDemuxing            = false;
   pCapabilities->bSupportsLastPlayedPosition = true;
 
   return PVR_ERROR_NO_ERROR;
@@ -584,6 +604,7 @@ long long SeekLiveStream(long long iPosition, int iWhence /* = SEEK_SET */) { re
 long long PositionLiveStream(void) { return -1; }
 long long LengthLiveStream(void) { return -1; }
 PVR_ERROR SetRecordingPlayCount(const PVR_RECORDING &recording, int count) { return PVR_ERROR_NOT_IMPLEMENTED; }
+PVR_ERROR GetRecordingEdl(const PVR_RECORDING&, PVR_EDL_ENTRY[], int*) { return PVR_ERROR_NOT_IMPLEMENTED; };
 unsigned int GetChannelSwitchDelay(void) { return 0; }
 void PauseStream(bool bPaused) {}
 bool CanPauseStream(void) { return false; }

@@ -8,9 +8,10 @@
 #
 
 #your home dir
-HOME=$(shell echo ~)
+#HOME=$(shell echo ~)
+HOME=/opt/a10hacking
 #where your tarballs go
-TARBALLS=$(HOME)/tarballs
+TARBALLS=$(HOME)/xbmctmp/tarballs
 #whether to compile for armhf
 USEARMHF=1
 
@@ -51,12 +52,12 @@ else
 #
 
 #where is your arm rootfs
-SDKSTAGE=$(HOME)/rootfs
+SDKSTAGE=$(HOME)/rootfs/debrootfs
 #where is your xbmc install root 
-XBMCPREFIX=/allwinner/xbmc-pvr-bin$(HF)
+XBMCPREFIX=$(HOME)/xbmctmp/allwinner/xbmc-pvr-bin$(HF)
 #where is your toolchain
 TOOLCHAIN=/usr/arm-linux-gnueabi$(HF)
-JOBS=4
+JOBS=2
 export HOST=arm-linux-gnueabi$(HF)
 export BUILD=amd64-linux
 export CROSS_COMPILE=${HOST}-
